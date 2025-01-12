@@ -1,0 +1,144 @@
+.blue-band {
+    padding: 0.5em 1em;
+}
+
+/* General sidebar styles */
+.burger-sidebar {
+    /*background: white;*/
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 60vw;
+    height: 100vh;
+    z-index: 100;
+
+}
+
+.close-button{
+    margin:5px;
+    position: absolute;
+    top:0;
+    left: 0;
+}
+
+.bar {
+    width: 30px;
+    height: 3px;
+    margin: 4px 0;
+    transition: 0.4s;
+}
+
+.open .bar:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.open .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.open .bar:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+
+
+.menu-item-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item {
+    text-align: left;
+    margin: 0;
+    padding: 10px 20px; /* Add spacing between items */
+    transition: background-color 0.2s; /* Smooth background color transition */
+
+    cursor: pointer;
+}
+
+.menu-item > a {
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+
+.menu-item {
+    position: relative;
+    display: inline-block;
+    text-decoration: none; /* Remove default underline */
+}
+
+.menu-item::before,
+.menu-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 2px; /* Height of the underline */
+    background-color: hsl(var(--primary)); /* Color of the underline */
+    transition: width 0.3s ease-in-out, left 0.3s ease-out; /* Transition for width and left change */
+}
+
+.menu-item::after {
+    left: 0;
+}
+
+.menu-item:hover::before {
+    width: 100%; /* Expand underline from left to right */
+    left: 0; /* Start from left */
+}
+
+.menu-item:hover::after {
+    width: 100%; /* Expand underline from left to right */
+    left: 0; /* Start from left */
+}
+
+
+.memu-title {
+    color: black;
+    margin: 1em 0 2em 0;
+    text-align: center;
+    border-bottom: 3px solid #808080;
+}
+
+@keyframes gelatin {
+    0%, 100% {
+        transform: scaleX(1);
+    }
+    20%, 80% {
+        transform: scaleX(0.9);
+    }
+    40%, 60% {
+        transform: scaleX(1.1);
+    }
+}
+
+
+/* Initial styles for closed state */
+.burger-sidebar {
+    right: -60vw; /* Start off-screen */
+    transform-origin: right center; /* Set the transform origin to the left center */
+    transition: right 0.3s ease-in-out, transform 0.6s ease-in-out; /* Add transitions for left and transform */
+}
+
+/* Styles for open state */
+.burger-sidebar.open {
+    right: 0; /* Slide in from the right */
+    animation: gelatin 0.6s ease; /* Apply the bounce animation */
+}
+
+/* Styles for closed state */
+.burger-sidebar.closed {
+    right: -60vw; /* Slide out to the right */
+}
+
+
+
+
+
+
+
+
+
+
