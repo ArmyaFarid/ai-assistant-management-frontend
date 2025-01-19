@@ -105,6 +105,25 @@ export default function DemoVoiceAssistant() {
         sendClientEvent({type: "response.create"});
     }
 
+    function sendInitialMessage(welcomeMessage) {
+        const event = {
+            type: "conversation.item.create",
+            item: {
+                type: "message",
+                role: "user",
+                content: [
+                    {
+                        type: "input_text",
+                        text: `Start conversation with '${welcomeMessage}'. And ask for the caller information, nom et prenom`
+                    },
+                ],
+            },
+        };
+
+        sendClientEvent(event);
+        sendClientEvent({type: "response.create"});
+    }
+
     // Attach event listeners to the data channel when a new one is created
     useEffect(() => {
         if (dataChannel) {
@@ -116,6 +135,7 @@ export default function DemoVoiceAssistant() {
             // Set session active when the data channel is opened
             dataChannel.addEventListener("open", () => {
                 setIsSessionActive(true);
+                sendInitialMessage("Bonjour , bienvenu au cabinet de kinesiee therapie")
                 setEvents([]);
             });
         }
