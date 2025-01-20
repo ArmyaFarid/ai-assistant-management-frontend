@@ -10,7 +10,22 @@ function SessionStopped({ startSession }) {
     if (isActivating) return;
 
     setIsActivating(true);
-    startSession();
+    try {
+        startSession()
+            .then((peerConnection) => {
+                console.log("Session started successfully", peerConnection);
+                // You can now interact with the peerConnection object
+            })
+            .catch((error) => {
+                console.error("Error starting session:", error.message);
+                setIsActivating(false);
+                // Handle the error gracefully (e.g., show an error message to the user)
+            });
+
+    }catch (e) {
+        setIsActivating(false);
+    }
+
   }
 
   return (

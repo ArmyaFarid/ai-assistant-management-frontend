@@ -1,8 +1,12 @@
 'use client'
 import {useEffect, useRef, useState} from "react";
 import SessionControls from "./SessionControls";
+import {CustomApiClient} from "@/lib/services/api/CustomApiClientProvider";
+import {API_BASE_URL} from "@/config/environments";
 
-export default function DemoVoiceAssistant() {
+type Props = { assistantSid : string; startMessage : string}
+export default function DemoVoiceAssistant( {assistantSid , startMessage} : Props ) {
+    const customClient = new CustomApiClient(API_BASE_URL);
     const [isSessionActive, setIsSessionActive] = useState(false);
     const [events, setEvents] = useState([]);
     const [dataChannel, setDataChannel] = useState(null);
@@ -11,50 +15,61 @@ export default function DemoVoiceAssistant() {
 
     async function startSession() {
         // Get an ephemeral key from the Fastify server
-        const tokenResponse = await fetch("http://127.0.0.1:3000/token");
-        const data = await tokenResponse.json();
-        const EPHEMERAL_KEY = data.client_secret.value;
+        // const tokenResponse = await fetch("http://localhost:8181/api/demo/call/token");
+        // let tokenResponse = null;
+        return new Promise<any>(async (resolve, reject) => {
+            try {
+                const tokenResponse = await customClient.fetch("/demo/call/token", "POST", {assistantSid: assistantSid})
+                const data = await tokenResponse.json();
+                const EPHEMERAL_KEY = data.client_secret.value;
 
-        // Create a peer connection
-        const pc = new RTCPeerConnection();
+                // Create a peer connection
+                const pc = new RTCPeerConnection();
 
-        // Set up to play remote audio from the model
-        audioElement.current = document.createElement("audio");
-        audioElement.current.autoplay = true;
-        pc.ontrack = (e) => (audioElement.current.srcObject = e.streams[0]);
+                // Set up to play remote audio from the model
+                audioElement.current = document.createElement("audio");
+                audioElement.current.autoplay = true;
+                pc.ontrack = (e) => (audioElement.current.srcObject = e.streams[0]);
 
-        // Add local audio track for microphone input in the browser
-        const ms = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-        });
-        pc.addTrack(ms.getTracks()[0]);
+                // Add local audio track for microphone input in the browser
+                const ms = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                });
+                pc.addTrack(ms.getTracks()[0]);
 
-        // Set up data channel for sending and receiving events
-        const dc = pc.createDataChannel("oai-events");
-        setDataChannel(dc);
+                // Set up data channel for sending and receiving events
+                const dc = pc.createDataChannel("oai-events");
+                setDataChannel(dc);
 
-        // Start the session using the Session Description Protocol (SDP)
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
+                // Start the session using the Session Description Protocol (SDP)
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
 
-        const baseUrl = "https://api.openai.com/v1/realtime";
-        const model = "gpt-4o-realtime-preview-2024-12-17";
-        const sdpResponse = await fetch(`${baseUrl}?model=${model}`, {
-            method: "POST",
-            body: offer.sdp,
-            headers: {
-                Authorization: `Bearer ${EPHEMERAL_KEY}`,
-                "Content-Type": "application/sdp",
-            },
-        });
+                const baseUrl = "https://api.openai.com/v1/realtime";
+                const model = "gpt-4o-realtime-preview-2024-12-17";
+                const sdpResponse = await fetch(`${baseUrl}?model=${model}`, {
+                    method: "POST",
+                    body: offer.sdp,
+                    headers: {
+                        Authorization: `Bearer ${EPHEMERAL_KEY}`,
+                        "Content-Type": "application/sdp",
+                    },
+                });
 
-        const answer = {
-            type: "answer",
-            sdp: await sdpResponse.text(),
-        };
-        await pc.setRemoteDescription(answer);
+                const answer = {
+                    type: "answer",
+                    sdp: await sdpResponse.text(),
+                };
+                await pc.setRemoteDescription(answer);
+                peerConnection.current = pc;
+                resolve(pc);
+            } catch (e) {
+                console.error("Error starting session:", e); // Log the actual error
 
-        peerConnection.current = pc;
+                reject(new Error(`Fail to start session: ${e.message || e}`)); // Provide more detailed error
+
+            }
+        })
     }
 
     // Stop current session, clean up peer connection and data channel
@@ -135,7 +150,7 @@ export default function DemoVoiceAssistant() {
             // Set session active when the data channel is opened
             dataChannel.addEventListener("open", () => {
                 setIsSessionActive(true);
-                sendInitialMessage("Bonjour , bienvenu au cabinet de kinesiee therapie")
+                sendInitialMessage(startMessage)
                 setEvents([]);
             });
         }

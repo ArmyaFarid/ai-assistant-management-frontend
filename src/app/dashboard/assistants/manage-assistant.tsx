@@ -5,6 +5,7 @@ import {useHttpGet, useHttpPost, useHttpPut} from "@/lib/services/api/hooks/http
 import {Assistant} from "@/lib/definitions";
 import {Button} from "@/components/ui/button";
 import {toast} from "@/components/ui/use-toast";
+import DemoVoiceAssistant from "@/app/demo/ai/demo-voice-assistant";
 
 export const ManageAssistant : React.FC<{assistantSid : string}> = ({assistantSid})=>{
 
@@ -81,15 +82,19 @@ export const ManageAssistant : React.FC<{assistantSid : string}> = ({assistantSi
                 </div>
 
                 <div className="">
-                    <Button>
-                        Tester
-                    </Button>
+                    {/*<Button>*/}
+                    {/*    Tester*/}
+                    {/*</Button>*/}
+                    {
+                        assistantFormData &&
+                        <DemoVoiceAssistant assistantSid={assistantFormData.assistantSid} startMessage={assistantFormData.welcomeMessage}/>
+                    }
                 </div>
             </div>
 
             <div className="w-full flex justify-end gap-8">
                 <Button onClick={() => {submit()}}>
-                    Publier
+                    Enregistrer
                 </Button>
                 <Button variant="outline" onClick={()=>reset()}>
                     Annuler les changements
