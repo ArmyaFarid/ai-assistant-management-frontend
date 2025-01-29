@@ -78,6 +78,10 @@ const data = {
                     title: "Numero de telephones",
                     url: "/dashboard/numbers",
                 },
+                {
+                    title: "Les ressources",
+                    url: "/dashboard/resources",
+                },
             ],
         },
         {

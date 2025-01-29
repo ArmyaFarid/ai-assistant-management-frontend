@@ -5,10 +5,9 @@ import {useEffect, useRef, useState} from "react";
 import {NumberConfigForm} from "@/ui/numbers/number-config-form";
 import {ManageResource} from "@/app/dashboard/resources/manage-resource";
 import {useHttpGet, useHttpPost} from "@/lib/services/api/hooks/httpHooks";
-import {Assistant, Phone} from "@/lib/definitions";
+import {Assistant, Phone, Resource} from "@/lib/definitions";
 import {cn} from "@/lib/utils";
 import {toast} from "@/components/ui/use-toast";
-import {ManageNumber} from "@/app/dashboard/numbers/manage-number";
 
 
 export default function Page() {
@@ -19,28 +18,27 @@ export default function Page() {
     //     },
     // ];
 
-    const [createPhone, { response, isCreatingPhone  }] = useHttpPost<Phone>('/phones');
+    const [createResource, { response, isCreatingResource  }] = useHttpPost<Phone>('/resources');
 
-    const { data : phones , loading , refetch  } = useHttpGet<Phone[]>('/phones')
+    const { data : resources , loading , refetch  } = useHttpGet<Resource[]>('/resources')
 
 
-    const [activePhone, setActivePhone] = useState<string|null>(null);
+    const [activeResource, setActiveResource] = useState<number|null>(null);
 
 
     useEffect(() => {
-        if(phones && phones.length > 0) setActivePhone(phones[0].number);
-    }, [phones]);
+        if(resources && resources.length > 0) setActiveResource(resources[0].id);
+    }, [resources]);
 
     function handlePhoneCreate() {
         const form = {
-
+            name : "Ressource n 1",
         };
-        createPhone(form).then(response=>{
+        createResource(form).then(response=>{
             if(response.status == 200){
-                console.log("workeeed")
                 toast({
                     title: "Reussi",
-                    description: `Un numero vous a ete attribue`,
+                    description: `La ressource est cree`,
                 })
             }
         }).finally(()=>{
@@ -63,31 +61,31 @@ export default function Page() {
                                         onClick={()=>{
                                             handlePhoneCreate();
                                         }}
-                                        disabled={isCreatingPhone}
+                                        disabled={isCreatingResource}
                                 >
-                                    Acheter un numero
+                                    Creer une ressource
                                 </Button>
                             </div>
 
                             {/* Assistant List Section */}
                             <ul className="flex flex-col gap-4 h-[550px]  overflow-auto scroll-auto scrollbar-hide">
                                 {
-                                    phones && phones.map((phone) => {
+                                    resources && resources.map((resource) => {
                                         return (
-                                            <li key={phone.number}
+                                            <li key={resource.id}
                                                 className={
                                                     cn(
                                                         "p-4 cursor-pointer rounded-lg transition-all hover:bg-gray-200",
-                                                        activePhone == phone.number && "bg-gray-200"
+                                                        activeResource == resource.id && "bg-gray-200"
                                                     )
                                                 }
                                                 onClick={()=>{
-                                                    setActivePhone(phone.number)
+                                                    setActiveResource(resource.id)
                                                 }}
                                             >
                                                 <div className="flex justify-between items-center text-gray-800">
-                                                    <span className="font-medium text-sm">{phone.number}</span>
-                                                    <span className="text-gray-500 text-xs">{phone?.assistant?.assistantSid}</span>
+                                                    <span className="font-medium text-sm">{resource.name}</span>
+                                                    {/*<span className="text-gray-500 text-xs">{resource?.assistant?.assistantSid}</span>*/}
                                                 </div>
                                             </li>
                                         )
@@ -98,7 +96,7 @@ export default function Page() {
 
                         <div className="flex-1 w-full flex flex-col gap-8 p-8">
 
-                            {activePhone && <ManageNumber id={activePhone}/>}
+                            {activeResource && <ManageResource id={activeResource}/>}
 
                         </div>
 
