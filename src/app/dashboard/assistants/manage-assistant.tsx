@@ -21,6 +21,7 @@ export const ManageAssistant : React.FC<{assistantSid : string}> = ({assistantSi
         assistantName: "",
         welcomeMessage: "",
         prompt: "",
+        resources : [],
         option: "",
     });
 
@@ -31,10 +32,10 @@ export const ManageAssistant : React.FC<{assistantSid : string}> = ({assistantSi
                 assistantName: assistant?.assistantName || "",
                 welcomeMessage: assistant?.welcomeMessage || "",
                 prompt: assistant?.prompt || "",
+                resources : assistant?.resources.map((r)=>{return r.id}) || [],
                 option: "",
             }
         )
-        console.log(assistant)
     }, [assistantSid , assistant]);
 
     useEffect(() => {

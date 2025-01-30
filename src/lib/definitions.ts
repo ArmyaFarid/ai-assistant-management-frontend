@@ -45,6 +45,7 @@ export type Assistant = {
   assistantName: string;
   prompt: string;
   welcomeMessage: string;
+  resources : Resource[];
 };
 
 export type Phone = {

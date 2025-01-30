@@ -21,6 +21,9 @@ import {FieldElement} from "@/ui/type";
 import RequiredTag from "@/ui/required-tag";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Textarea} from "@/components/ui/textarea";
+import {useHttpGet} from "@/lib/services/api/hooks/httpHooks";
+import {Resource} from "@/lib/definitions";
+import {MultiSelect} from "@/components/ui/multi-select";
 
 const formSchema = z.object({
     assistantName: z.string().min(2, {
@@ -35,6 +38,8 @@ const formSchema = z.object({
     option: z.string().min(0, {
         message: "2 lettres minimum.",
     }).optional(),
+    resources: z.array(z.number())
+        .min(0, { message: 'Veuillez sélectionner au moins 3 éléments.' }),
 })
 
 
@@ -43,11 +48,15 @@ type BasicsInfoType = {
     welcomeMessage: string
     prompt: string
     option: string
+    resources: number[]
 }
 
 type FieldName = "assistantName" | "prompt" | "welcomeMessage" | "option";
 
-
+type Option = {
+    value : string;
+    label : string;
+}
 
 const formFieldList: FieldElement<FieldName>[] = [
     {
@@ -86,6 +95,9 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
 
     const [list , setList] = useState<string[]|null>(null);
 
+    const { data : resources , loading , refetch  } = useHttpGet<Resource[]>('/resources')
+
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -93,6 +105,7 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
             welcomeMessage: defaultData.welcomeMessage,
             prompt: defaultData.prompt,
             option: defaultData.option,
+            resources: defaultData.resources,
         },
     })
 
@@ -104,25 +117,29 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
                 assistantName: defaultData.assistantName,
                 welcomeMessage: defaultData.welcomeMessage,
                 prompt: defaultData.prompt,
+                resources: defaultData.resources,
                 option: defaultData.option,
             });
+            console.log(resources)
+            console.log(defaultData)
         }
     }, [defaultData, form]);
 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-
         const data = {
             assistantName: values.assistantName,
             welcomeMessage: values.welcomeMessage,
             prompt: values.prompt,
             option: values.option,
+            resources: values.resources,
         }
         onFormSubmit(true , data);
     }
 
     useEffect(() => {
         setList(["Homme","Femme"]);
+        refetch();
     }, []);
 
     return (
@@ -190,6 +207,34 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
                             {/*    <Input placeholder="Ecrire son secteur" {...field}*/}
                             {/*           type="text"/>*/}
                             {/*</FormControl>*/}
+                            <FormMessage className="text-[12px]" />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="resources"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Compétences techniques<RequiredTag/></FormLabel>
+                            {resources && <MultiSelect
+                                options={
+                                    resources.map((resource)=>{
+                                        return {
+                                            value : resource.id,
+                                            label : resource.name
+                                        } as Option
+                                    })
+                                }
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                placeholder="Choisir les resources de votre assistant"
+                                variant="inverted"
+                                mutable={true}
+                                maxCount={3}
+                                limit={5}
+                            />}
                             <FormMessage className="text-[12px]" />
                         </FormItem>
                     )}

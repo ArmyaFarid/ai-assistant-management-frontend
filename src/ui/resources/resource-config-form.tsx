@@ -148,6 +148,7 @@ export const ResourceConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onForm
                     })
                 }
 
+
                 {
                     showSubmit &&
                     <Button type="submit" className="w-full mt-8 h-[50px]">Submit</Button>
