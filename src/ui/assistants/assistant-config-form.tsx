@@ -22,7 +22,7 @@ import RequiredTag from "@/ui/required-tag";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Textarea} from "@/components/ui/textarea";
 import {useHttpGet} from "@/lib/services/api/hooks/httpHooks";
-import {Resource} from "@/lib/definitions";
+import {Prompt, Resource} from "@/lib/definitions";
 import {MultiSelect} from "@/components/ui/multi-select";
 
 const formSchema = z.object({
@@ -32,8 +32,8 @@ const formSchema = z.object({
     welcomeMessage: z.string().min(2, {
         message: "2 lettres minimum.",
     }),
-    prompt: z.string().min(10, {
-        message: "10 lettres minimum.",
+    prompt: z.string().min(0, {
+        message: "",
     }),
     option: z.string().min(0, {
         message: "2 lettres minimum.",
@@ -51,7 +51,7 @@ type BasicsInfoType = {
     resources: number[]
 }
 
-type FieldName = "assistantName" | "prompt" | "welcomeMessage" | "option";
+type FieldName = "assistantName" | "welcomeMessage" | "option";
 
 type Option = {
     value : string;
@@ -73,13 +73,13 @@ const formFieldList: FieldElement<FieldName>[] = [
         inputType: "text",
         required: true,
     },
-    {
-        fieldName: "prompt",
-        label: "Instructions systeme",
-        placeholder: "Ex : Tu es une assistante telephonique qui aide a prendre les rendez vous.",
-        inputType: "textarea",
-        required: true,
-    },
+    // {
+    //     fieldName: "prompt",
+    //     label: "Instructions systeme",
+    //     placeholder: "Ex : Tu es une assistante telephonique qui aide a prendre les rendez vous.",
+    //     inputType: "textarea",
+    //     required: true,
+    // },
     // {
     //     fieldName: "option",
     //     label: "Secteur d'activité",
@@ -96,6 +96,7 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
     const [list , setList] = useState<string[]|null>(null);
 
     const { data : resources , loading , refetch  } = useHttpGet<Resource[]>('/resources')
+    const { data : prompts , promptsloading , promptsrefetch  } = useHttpGet<Prompt[]>('/prompts')
 
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -113,6 +114,9 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
     useEffect(() => {
         // Check if defaultData has changed
         if (defaultData) {
+            console.log("Resetting here")
+            console.log(prompts)
+            console.log(defaultData)
             form.reset({
                 assistantName: defaultData.assistantName,
                 welcomeMessage: defaultData.welcomeMessage,
@@ -120,10 +124,8 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
                 resources: defaultData.resources,
                 option: defaultData.option,
             });
-            console.log(resources)
-            console.log(defaultData)
         }
-    }, [defaultData, form]);
+    }, [defaultData, form , prompts]);
 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -179,6 +181,45 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
                         )
                     })
                 }
+
+                <FormField
+                    control={form.control}
+                    name="prompt"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Instructions<RequiredTag/></FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue
+                                            placeholder="Choisir une instruction"
+                                        />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {
+                                        prompts &&
+                                        prompts.map((option)=>{
+                                            return (
+                                                <SelectItem
+                                                    key={option.name+option.id}
+                                                    value={option.id.toString()}
+                                                >
+                                                    {option.name}
+                                                </SelectItem>
+                                            )
+                                        })
+                                    }
+                                </SelectContent>
+                            </Select>
+                            {/*<FormControl>*/}
+                            {/*    <Input placeholder="Ecrire son secteur" {...field}*/}
+                            {/*           type="text"/>*/}
+                            {/*</FormControl>*/}
+                            <FormMessage className="text-[12px]" />
+                        </FormItem>
+                    )}
+                />
 
                 <FormField
                     control={form.control}

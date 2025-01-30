@@ -31,7 +31,7 @@ export const ManageAssistant : React.FC<{assistantSid : string}> = ({assistantSi
                 assistantSid: assistantSid,
                 assistantName: assistant?.assistantName || "",
                 welcomeMessage: assistant?.welcomeMessage || "",
-                prompt: assistant?.prompt || "",
+                prompt: assistant?.prompt?.id.toString() || "",
                 resources : assistant?.resources.map((r)=>{return r.id}) || [],
                 option: "",
             }

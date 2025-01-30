@@ -98,7 +98,7 @@ export default function Page() {
 
                         <div className="flex-1 w-full flex flex-col gap-8 p-8">
 
-                            {activePhone && <ManageNumber id={activePhone}/>}
+                            {activePhone && <ManageNumber  number={activePhone}/>}
 
                         </div>
 

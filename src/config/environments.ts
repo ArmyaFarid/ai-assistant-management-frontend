@@ -1,4 +1,4 @@
-export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:8181' : 'http://localhost:8181';
+export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://srv645133.hstgr.cloud:9090' : 'http://srv645133.hstgr.cloud:9090';
 export const API_BASE_URL = BASE_URL+"/api"
 
 

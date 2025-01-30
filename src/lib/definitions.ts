@@ -43,7 +43,7 @@ export type Assistant = {
   id: number;
   assistantSid: string;
   assistantName: string;
-  prompt: string;
+  prompt: Prompt;
   welcomeMessage: string;
   resources : Resource[];
 };
@@ -57,6 +57,13 @@ export type Phone = {
 };
 
 export type Resource = {
+  id: number;
+  name: string;
+  content: string;
+  description: string;
+};
+
+export type Prompt = {
   id: number;
   name: string;
   content: string;

@@ -89,8 +89,6 @@ export const NumberConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFormSu
     useEffect(() => {
         // Check if defaultData has changed
         if (defaultData) {
-            console.log("default data")
-            console.log(defaultData)
             form.reset({
                 description: defaultData.description,
                 assistantSid: defaultData.assistantSid,
