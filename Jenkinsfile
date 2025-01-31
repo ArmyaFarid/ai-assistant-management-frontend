@@ -12,7 +12,7 @@ pipeline {
                 script {
                     sh '''
                         # Build the Docker image using Docker Compose
-                        docker compose build
+                        docker compose build --no-cache
                     '''
                 }
             }
