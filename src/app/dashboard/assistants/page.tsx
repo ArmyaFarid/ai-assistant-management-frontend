@@ -12,7 +12,7 @@ import {toast} from "@/components/ui/use-toast";
 export default function Page() {
 
 
-    const [createAssistant, { response, isCreatingAssistant  }] = useHttpPost<Assistant>('/assistants');
+    const [createAssistant, { response, loading: isCreatingAssistant  }] = useHttpPost('/assistants');
 
     const { data : assistants , loading , refetch  } = useHttpGet<Assistant[]>('/assistants')
 

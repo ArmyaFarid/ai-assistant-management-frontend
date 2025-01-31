@@ -19,7 +19,7 @@ export default function Page() {
     //     },
     // ];
 
-    const [createPhone, { response, isCreatingPhone  }] = useHttpPost<Phone>('/phones');
+    const [createPhone, { response, loading: isCreatingPhone  }] = useHttpPost('/phones');
 
     const { data : phones , loading , refetch  } = useHttpGet<Phone[]>('/phones')
 

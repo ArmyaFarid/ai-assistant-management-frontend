@@ -3,7 +3,7 @@ import {CloudLightning, CloudOff, MessageSquare, PhoneCall} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
 
-function SessionStopped({ startSession }) {
+function SessionStopped({ startSession } : any) {
   const [isActivating, setIsActivating] = useState(false);
 
   function handleStartSession() {
@@ -12,11 +12,11 @@ function SessionStopped({ startSession }) {
     setIsActivating(true);
     try {
         startSession()
-            .then((peerConnection) => {
+            .then((peerConnection : any) => {
                 console.log("Session started successfully", peerConnection);
                 // You can now interact with the peerConnection object
             })
-            .catch((error) => {
+            .catch((error: any) => {
                 console.error("Error starting session:", error.message);
                 setIsActivating(false);
                 // Handle the error gracefully (e.g., show an error message to the user)
@@ -52,7 +52,7 @@ function SessionStopped({ startSession }) {
   );
 }
 
-function SessionActive({ stopSession }) {
+function SessionActive({ stopSession } : any) {
   return (
     <div className="">
       <Button onClick={stopSession}
@@ -74,7 +74,7 @@ export default function SessionControls({
   startSession,
   stopSession,
   isSessionActive,
-}) {
+} : any) {
   return (
     <div className="flex gap-4 h-full">
       {isSessionActive ? (

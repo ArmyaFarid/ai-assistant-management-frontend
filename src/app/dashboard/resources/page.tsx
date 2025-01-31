@@ -18,7 +18,7 @@ export default function Page() {
     //     },
     // ];
 
-    const [createResource, { response, isCreatingResource  }] = useHttpPost<Phone>('/resources');
+    const [createResource, { response, loading: isCreatingResource  }] = useHttpPost('/resources');
 
     const { data : resources , loading , refetch  } = useHttpGet<Resource[]>('/resources')
 

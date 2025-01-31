@@ -43,7 +43,7 @@ interface SigninFormProps {
 
 export function SignupForm({onSignin}: SigninFormProps) {
     const router = useRouter()
-    const [postData, { response, loading  }] = useHttpPost<User>('/auth/signup');
+    const [postData, { response, loading  }] = useHttpPost('/auth/signup');
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

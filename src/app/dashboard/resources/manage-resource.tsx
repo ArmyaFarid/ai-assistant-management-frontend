@@ -12,7 +12,7 @@ export const ManageResource : React.FC<{id : number}> = ({id})=>{
 
     const { data : resource , loading , refetch  } = useHttpGet<Resource>(`/resources/${id}`)
 
-    const [updateResource, { response, loadingPut  }] = useHttpPut<Resource>('/resources');
+    const [updateResource, { response, loading: loadingPut  }] = useHttpPut('/resources');
 
 
     const activeFormRef = useRef<HTMLFormElement>(null);
@@ -20,9 +20,9 @@ export const ManageResource : React.FC<{id : number}> = ({id})=>{
 
     const [resourceFormData, setResourceFormData] = useState({
         id: id,
-        name: resource?.name,
-        content: resource?.content,
-        description: resource?.description,
+        name: resource?.name || "",
+        content: resource?.content || "",
+        description: resource?.description || "",
     });
 
     useEffect(() => {

@@ -35,7 +35,8 @@ const formSchema = z.object({
 
 
 type BasicsInfoType = {
-    description: string
+    number:string
+    description: string| undefined
     assistantSid: string
 }
 

@@ -11,8 +11,13 @@ import {
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 
+interface BreadcrumbItem {
+    href: string;
+    label: string;
+}
+
 const DynamicBreadcrumb = () => {
-    const [breadcrumbItems, setBreadcrumbItems] = useState([]);
+    const [breadcrumbItems, setBreadcrumbItems] = useState<BreadcrumbItem[]>([]);
     const pathname = usePathname();  // Use pathname from next/navigation
 
     // Update breadcrumb items based on the current pathname
@@ -38,7 +43,7 @@ const DynamicBreadcrumb = () => {
             <BreadcrumbList>
                 {breadcrumbItems.map((item, index) => (
                     <BreadcrumbItem key={index}>
-                        <BreadcrumbLink as={Link} href={item.href}>
+                        <BreadcrumbLink href={item.href}>
                             {item.label}
                         </BreadcrumbLink>
                         {index < breadcrumbItems.length - 1 && (

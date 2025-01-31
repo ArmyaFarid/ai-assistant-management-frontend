@@ -96,7 +96,7 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
     const [list , setList] = useState<string[]|null>(null);
 
     const { data : resources , loading , refetch  } = useHttpGet<Resource[]>('/resources')
-    const { data : prompts , promptsloading , promptsrefetch  } = useHttpGet<Prompt[]>('/prompts')
+    const { data : prompts , loading : promptsloading , refetch : promptsrefetch  } = useHttpGet<Prompt[]>('/prompts')
 
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -263,13 +263,13 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
                                 options={
                                     resources.map((resource)=>{
                                         return {
-                                            value : resource.id,
+                                            value : resource.id.toString(),
                                             label : resource.name
                                         } as Option
                                     })
                                 }
                                 onValueChange={field.onChange}
-                                defaultValue={field.value}
+                                defaultValue={field.value.map(String)}
                                 placeholder="Choisir les resources de votre assistant"
                                 variant="inverted"
                                 mutable={true}

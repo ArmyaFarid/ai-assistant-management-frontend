@@ -9,9 +9,9 @@ export default function DemoVoiceAssistant( {assistantSid , startMessage} : Prop
     const customClient = new CustomApiClient(API_BASE_URL);
     const [isSessionActive, setIsSessionActive] = useState(false);
     const [events, setEvents] = useState([]);
-    const [dataChannel, setDataChannel] = useState(null);
-    const peerConnection = useRef(null);
-    const audioElement = useRef(null);
+    const [dataChannel, setDataChannel] = useState<RTCDataChannel | null>(null);
+    const peerConnection = useRef<RTCPeerConnection | null>(null);
+    const audioElement = useRef<HTMLAudioElement | null>(null);
 
     async function startSession() {
         // Get an ephemeral key from the Fastify server
@@ -27,9 +27,25 @@ export default function DemoVoiceAssistant( {assistantSid , startMessage} : Prop
                 const pc = new RTCPeerConnection();
 
                 // Set up to play remote audio from the model
+
                 audioElement.current = document.createElement("audio");
+
+
+
+                //@ts-ignore
                 audioElement.current.autoplay = true;
+                //@ts-ignore
                 pc.ontrack = (e) => (audioElement.current.srcObject = e.streams[0]);
+
+                // if (audioElement.current) {
+                //
+                //     audioElement.current.autoplay = true;
+                //     pc.ontrack = (e) => {
+                //         if (audioElement.current) {  // Add another null check here
+                //             audioElement.current.srcObject = e.streams[0];
+                //         }
+                //     };
+                // }
 
                 // Add local audio track for microphone input in the browser
                 const ms = await navigator.mediaDevices.getUserMedia({
@@ -59,14 +75,13 @@ export default function DemoVoiceAssistant( {assistantSid , startMessage} : Prop
                 const answer = {
                     type: "answer",
                     sdp: await sdpResponse.text(),
-                };
+                } as RTCSessionDescriptionInit;
                 await pc.setRemoteDescription(answer);
                 peerConnection.current = pc;
                 resolve(pc);
-            } catch (e) {
+            } catch (e : any) {
                 console.error("Error starting session:", e); // Log the actual error
-
-                reject(new Error(`Fail to start session: ${e.message || e}`)); // Provide more detailed error
+                reject(new Error(`Fail to start session: ${e?.message || e}`)); // Provide more detailed error
 
             }
         })
@@ -87,10 +102,11 @@ export default function DemoVoiceAssistant( {assistantSid , startMessage} : Prop
     }
 
     // Send a message to the model
-    function sendClientEvent(message) {
+    function sendClientEvent(message : any) {
         if (dataChannel) {
             message.event_id = message.event_id || crypto.randomUUID();
             dataChannel.send(JSON.stringify(message));
+            //@ts-ignore
             setEvents((prev) => [message, ...prev]);
         } else {
             console.error(
@@ -101,7 +117,7 @@ export default function DemoVoiceAssistant( {assistantSid , startMessage} : Prop
     }
 
     // Send a text message to the model
-    function sendTextMessage(message) {
+    function sendTextMessage(message : any) {
         const event = {
             type: "conversation.item.create",
             item: {
@@ -120,7 +136,7 @@ export default function DemoVoiceAssistant( {assistantSid , startMessage} : Prop
         sendClientEvent({type: "response.create"});
     }
 
-    function sendInitialMessage(welcomeMessage) {
+    function sendInitialMessage(welcomeMessage : string) {
         const event = {
             type: "conversation.item.create",
             item: {
@@ -144,6 +160,7 @@ export default function DemoVoiceAssistant( {assistantSid , startMessage} : Prop
         if (dataChannel) {
             // Append new server events to the list
             dataChannel.addEventListener("message", (e) => {
+                //@ts-ignore
                 setEvents((prev) => [JSON.parse(e.data), ...prev]);
             });
 

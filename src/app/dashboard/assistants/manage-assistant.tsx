@@ -1,4 +1,3 @@
-import {FormProps} from "@/ui/props";
 import {AssistantConfigForm} from "@/ui/assistants/assistant-config-form";
 import {useEffect, useRef, useState} from "react";
 import {useHttpGet, useHttpPost, useHttpPut} from "@/lib/services/api/hooks/httpHooks";
@@ -11,7 +10,7 @@ export const ManageAssistant : React.FC<{assistantSid : string}> = ({assistantSi
 
     const { data : assistant , loading , refetch  } = useHttpGet<Assistant>(`/assistants/sid/${assistantSid}`)
 
-    const [updateAssistant, { response, loadingPut  }] = useHttpPut<Assistant>('/assistants');
+    const [updateAssistant, { response, loading : loadingPut  }] = useHttpPut('/assistants');
 
 
     const activeFormRef = useRef<HTMLFormElement>(null);
@@ -21,7 +20,7 @@ export const ManageAssistant : React.FC<{assistantSid : string}> = ({assistantSi
         assistantName: "",
         welcomeMessage: "",
         prompt: "",
-        resources : [],
+        resources : [] as number[],
         option: "",
     });
 
@@ -32,7 +31,7 @@ export const ManageAssistant : React.FC<{assistantSid : string}> = ({assistantSi
                 assistantName: assistant?.assistantName || "",
                 welcomeMessage: assistant?.welcomeMessage || "",
                 prompt: assistant?.prompt?.id.toString() || "",
-                resources : assistant?.resources.map((r)=>{return r.id}) || [],
+                resources : assistant?.resources.map((r)=>{return r.id}) || [] as number[],
                 option: "",
             }
         )

@@ -11,7 +11,7 @@ export const ManageNumber : React.FC<{number : string}> = ({number})=>{
 
     const { data : phone , loading , refetch  } = useHttpGet<Phone>(`/phones/number/${number}`)
 
-    const [updateNumber, { response, loadingPut  }] = useHttpPut<Assistant>('/phones');
+    const [updateNumber, { response, loading:loadingPut  }] = useHttpPut('/phones');
 
 
     const activeFormRef = useRef<HTMLFormElement>(null);
