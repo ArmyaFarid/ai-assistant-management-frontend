@@ -12,6 +12,8 @@ import {
     getAssistantModes
 } from "@/lib/services/data-options";
 import {cn} from "@/lib/utils";
+import {useHttpGet} from "@/lib/services/api/hooks/httpHooks";
+import {Prompt} from "@/lib/definitions";
 
 
 const formSchema = z.object({
@@ -37,6 +39,7 @@ export const AssistantMode : React.FC<FormProps<FormDataType>> = ({onFormSubmit,
             mode : defaultData.mode,
         },
     })
+    const { data : prompts , loading : promptsloading , refetch : promptsrefetch  } = useHttpGet<Prompt[]>('/prompts')
     const [selectedMode, setSelectedMode] = useState(1);
 
     const modes = [
@@ -60,22 +63,15 @@ export const AssistantMode : React.FC<FormProps<FormDataType>> = ({onFormSubmit,
         if(defaultData.mode){
             setSelectedMode(defaultData.mode);
         }
-        setOptionData();
-    }, []);
-
-    async function setOptionData() {
-        const assistantMode = await getAssistantModes();
-        setAssistantModeOptions(assistantMode);
-    }
-
+    }, [defaultData.mode]);
 
     return (
-        <Form {...form}>
+        <Form {...form} >
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 text-base" ref={formRef}>
 
                 <div>
                     <div className="grid grid-cols-2 gap-4">
-                        {modes.map((mode) => (
+                        {prompts?.map((mode) => (
                             <label
                                 key={mode.id}
                                 className={cn(
@@ -95,7 +91,7 @@ export const AssistantMode : React.FC<FormProps<FormDataType>> = ({onFormSubmit,
                                         setSelectedMode(mode.id)
                                     }}
                                 />
-                                <div className="text-lg font-medium">{mode.label}</div>
+                                <div className="text-lg font-medium">{mode.name}</div>
                                 <div className="text-sm text-gray-600">{mode.description}</div>
                             </label>
                         ))}
