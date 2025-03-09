@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, {useEffect, useRef} from "react";
-import './progressStyle.css'; // Import the CSS file
+import './progressStyle.css';
+import {cn} from "@/lib/utils"; // Import the CSS file
 
 
 type CirclesStepProgressProps = {
@@ -63,8 +64,8 @@ const CirclesStepProgressItem = ({label, active, isInBeginning}: ItemType) => {
             }
 
             <div className={
-                clsx(
-                    'w-10 h-10  rounded-full border-4 flex flex-col items-center justify-center font-extrabold',
+                cn(
+                    'w-10 h-10  rounded-full border-2 flex flex-col items-center justify-center font-extrabold',
                     {
                         'border-primary text-primary': active,
                     },

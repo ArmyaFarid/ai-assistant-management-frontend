@@ -7,6 +7,7 @@ import {Assistant, User} from "@/lib/definitions";
 import {ManageAssistant} from "@/app/dashboard/assistants/manage-assistant";
 import {cn} from "@/lib/utils";
 import {toast} from "@/components/ui/use-toast";
+import Link from "next/link";
 
 
 export default function Page() {
@@ -51,15 +52,22 @@ export default function Page() {
                         <div className="flex flex-col p-6 rounded-2xl bg-muted/50 h-[600px] w-fit gap-6">
                             {/* Button Section */}
                             <div className="text-center">
-                                <Button className="px-6 py-2 text-lg font-semibold text-white"
-                                    onClick={()=>{
-                                        handleAssistantCreate();
-                                    }}
 
-                                    disabled={isCreatingAssistant}
-                                >
-                                    Créer un nouveau assistant
-                                </Button>
+                                <Link href="/dashboard/assistants/setup">
+                                    <Button className="px-6 py-2 text-lg font-semibold text-white">
+                                        Configurer un nouveau assistant
+                                    </Button>
+                                </Link>
+
+                                {/*<Button className="px-6 py-2 text-lg font-semibold text-white"*/}
+                                {/*    onClick={()=>{*/}
+                                {/*        handleAssistantCreate();*/}
+                                {/*    }}*/}
+
+                                {/*    disabled={isCreatingAssistant}*/}
+                                {/*>*/}
+                                {/*    Créer un nouveau assistant*/}
+                                {/*</Button>*/}
                             </div>
 
                             {/* Assistant List Section */}

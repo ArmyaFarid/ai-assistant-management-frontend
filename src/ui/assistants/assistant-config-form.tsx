@@ -258,7 +258,7 @@ export const AssistantConfigForm : React.FC<FormProps<BasicsInfoType>> = ({onFor
                     name="resources"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Compétences techniques<RequiredTag/></FormLabel>
+                            <FormLabel>Choisir les donnes a memoriser<RequiredTag/></FormLabel>
                             {resources && <MultiSelect
                                 options={
                                     resources.map((resource)=>{
